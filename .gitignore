@@ -2,4 +2,6 @@ dist/
 node_modules/
 .env
 .npmrc
+.npmrc-git
+.npmrc-npm
 .vscode

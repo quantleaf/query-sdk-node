@@ -6,9 +6,6 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 config(process.env.API_KEY);
 
-
-
-
 describe('Query schema builder testing', function() {
     it('Test field and class info simple', function() 
     {

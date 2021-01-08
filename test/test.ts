@@ -6,10 +6,10 @@ describe('Query schema builder testing', function() {
     
     it('Test field and class info simple', function() 
     {
-        @ClassInfo({ SWE: ['swe'], EN: ['en'] })
+        @ClassInfo({ SV: ['sv'], EN: ['en'] })
         class Clazz {
             @FieldInfo({
-                SWE: ['swe'],
+                SV: ['sv'],
                 EN: ['en']
             })
             numberField:number;
@@ -20,27 +20,27 @@ describe('Query schema builder testing', function() {
             stringField:string;
 
             @FieldInfo({
-                SWE: ['swe'],
+                SV: ['sv'],
             })
             dateField:Date;
         }
 
         const schema:Schema = generateSchema(new Clazz());
         expect(schema.name.key).equals('Clazz');
-        expect(schema.name.description['SWE']).deep.equals(['swe']);
+        expect(schema.name.description['SV']).deep.equals(['sv']);
         expect(schema.name.description['EN']).deep.equals(['en']);
         expect(Object.keys(schema.fields).length).equals(3);
         expect(schema.fields[0].domain).equals(StandardDomainType.NUMBER);
         expect(schema.fields[0].key).equals('numberField');
-        expect(schema.fields[0].description['SWE']).deep.equals(['swe']);
+        expect(schema.fields[0].description['SV']).deep.equals(['sv']);
         expect(schema.fields[0].description['EN']).deep.equals(['en']);
         expect(schema.fields[1].domain).equals(StandardDomainType.TEXT);
         expect(schema.fields[1].key).equals('stringField');
         expect(schema.fields[1].description['EN']).deep.equals(['en']);
-        expect(schema.fields[1].description['SWE']).undefined;
+        expect(schema.fields[1].description['SV']).undefined;
         expect(schema.fields[2].domain).equals(StandardDomainType.DATE);
         expect(schema.fields[2].key).equals('dateField');
-        expect(schema.fields[2].description['SWE']).deep.equals(['swe']);
+        expect(schema.fields[2].description['SV']).deep.equals(['sv']);
         expect(schema.fields[2].description['EN']).undefined;
 
     });
@@ -49,14 +49,14 @@ describe('Query schema builder testing', function() {
     it('Test field and class info renaming keys', function() 
     {
         @ClassInfo({
-            description: { SWE: ['swe'], EN: ['en'] },
+            description: { SV: ['sv'], EN: ['en'] },
             key: 'custom-clazz'
         })
         class Clazz {
             @FieldInfo({
                 key: 'custon-number',
                 description: {
-                    SWE: 'swe',
+                    SV: 'sv',
                     EN: 'en'
                 }
             })
@@ -65,12 +65,12 @@ describe('Query schema builder testing', function() {
         }
         const schema:Schema = generateSchema(new Clazz());
         expect(schema.name.key).equals('custom-clazz');
-        expect(schema.name.description['SWE']).deep.equals(['swe']);
+        expect(schema.name.description['SV']).deep.equals(['sv']);
         expect(schema.name.description['EN']).deep.equals(['en']);
         expect(Object.keys(schema.fields).length).equals(1);
         expect(schema.fields[0].domain).equals(StandardDomainType.NUMBER);
         expect(schema.fields[0].key).equals('custon-number');
-        expect(schema.fields[0].description['SWE']).deep.equals(['swe']);
+        expect(schema.fields[0].description['SV']).deep.equals(['sv']);
         expect(schema.fields[0].description['EN']).deep.equals(['en']);
     });
 
@@ -182,9 +182,9 @@ describe('API client', async function()
             })
             numberField:number;
         }
-        const resp = await translate('', [new Clazz()]);
-        expect(resp.queries.length).equals(0);
-        expect(resp.suggestions.length).greaterThan(0);
+        const resp = await translate('', [new Clazz()], { query: {}, suggest: { limit: 10}} );
+        expect(resp.query.length).equals(0);
+        expect(resp.suggest.length).greaterThan(0);
         expect(resp.unknown).to.not.exist;
 
     })

@@ -1,6 +1,6 @@
 
 import { LanguageCode } from '@quantleaf/code-language';
-import { QueryRequest } from '@quantleaf/query-request';
+import { QueryRequest, QueryResponse } from '@quantleaf/query-request';
 import { QueryResult } from '@quantleaf/query-result';
 import { StandardDomainType,  Schema, Field, KeyWithDescriptions, SimpleDescription,unwrapDescription} from '@quantleaf/query-schema';
 import axios, { AxiosError } from 'axios';
@@ -142,22 +142,34 @@ const isEmptyObject = (obj) => obj ? Object.getOwnPropertyNames(obj).length === 
 
 const translationCache:Map<string,Schema> = new Map();
 
+export interface QueryOptions 
+{
+    fuzzy?:boolean,
+    languageFilter?:LanguageCode[],
+    concurrencySize?:number
+}
+
+
 /**
  * @param text, the text we want to translate into @QueryResult object
+ * @param actions, the actions to perform, at least on of query or suggest has to be non null
+ * @param query, if true, a query translation will be performed
+ * @param suggest, if empty object, or object with suggetion 'limit' then suggestions will be calculated
  * @param clazzes, instances of classes annotated the descriptive schema annotations
  * @param options, additional options, read about these options at [API documentation](https://github.com/quantleaf/query/blob/main/API.md), Default: API defaults
  * @param cacheSchemas, If true generated schemas will be cached locally for performance benifits. Default: true
+ 
  */
 export const translate = async (
     text:string, 
     clazzes:any[], 
-    options: {
-        fuzzy?:boolean,
-        languageFilter?:LanguageCode[],
-        concurrencySize?:number
-    } = {},
+    actions: {
+        query?: {},
+        suggest?: { limit?:number }
+    },
+    options:QueryOptions  = {},
     cacheSchemas:boolean = true
-    ) : Promise<QueryResult> =>
+    ) : Promise<QueryResponse> =>
     {
         const schemas = [];
         // Get or build schemas,
@@ -188,8 +200,11 @@ export const translate = async (
             fuzzy:options.fuzzy,
             languageFilter: options.languageFilter,
             concurrencySize: options.concurrencySize,
-            schemas: schemas
+            schemas: schemas,
+            query: actions.query,
+            suggest: actions.suggest
         }
+      
         const apiKey = process.env.API_KEY;
         if(!apiKey)
             throw new Error('Missing API Key, include one by creating and .env file with content "API_KEY=YOUR API KEY"')
@@ -207,7 +222,7 @@ export const translate = async (
             console.error('Failed to perform Quantleaf Query translate request', error.response?.data);
             throw error;
         });
-    return resp.data as QueryResult
+    return resp.data as QueryResponse
 }
 
   

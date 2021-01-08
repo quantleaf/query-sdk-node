@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@quantleaf/code-language": "^1.0.9",
-    "@quantleaf/query-request": "^1.0.8",
+    "@quantleaf/query-request": "^1.0.9",
     "@quantleaf/query-result": "^1.0.34",
     "@quantleaf/query-schema": "^1.0.41",
     "axios": "^0.21.1",

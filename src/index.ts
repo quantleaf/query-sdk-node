@@ -5,8 +5,7 @@ import { QueryResult } from '@quantleaf/query-result';
 import { StandardDomainType,  Schema, Field, KeyWithDescriptions, SimpleDescription,unwrapDescription} from '@quantleaf/query-schema';
 import axios, { AxiosError } from 'axios';
 import "reflect-metadata";
-import * as dotenv from  'dotenv';
-dotenv.config();
+let currentApiKey = null;
 const fieldMetaDataSymbol = '__query_metadata__';
 const simpleTypeToStandardDomainType = (type:string) =>
 {
@@ -149,6 +148,10 @@ export interface QueryOptions
     concurrencySize?:number
 }
 
+export const config = (apiKey:string):void =>
+{   
+    currentApiKey = apiKey;
+}
 
 /**
  * @param text, the text we want to translate into @QueryResult object
@@ -205,16 +208,15 @@ export const translate = async (
             suggest: actions.suggest
         }
       
-        const apiKey = process.env.API_KEY;
-        if(!apiKey)
-            throw new Error('Missing API Key, include one by creating and .env file with content "API_KEY=YOUR API KEY"')
+        if(!currentApiKey)
+            throw new Error('Missing API Key, provide one by invoking "config" once')
 
         const resp = await axios({
             method: 'post',
             url:  'https://api.query.quantleaf.com/translate',
             headers: 
             {
-                'X-API-KEY' :  apiKey
+                'X-API-KEY' :  currentApiKey
             },
             data: queryRequest
         }).catch((error:AxiosError)=>

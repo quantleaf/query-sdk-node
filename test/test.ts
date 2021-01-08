@@ -1,7 +1,11 @@
 import { LanguageCode } from '@quantleaf/code-language';
 import { StandardDomainType, Schema} from '@quantleaf/query-schema';
 import { expect } from 'chai';
-import {ClassInfo, FieldInfo,generateSchema, translate} from '../src/index'
+import {ClassInfo, FieldInfo,generateSchema, translate, config } from '../src/index'
+import * as dotenv from 'dotenv';
+dotenv.config();
+config(process.env.API_KEY);
+
 describe('Query schema builder testing', function() {
     
     it('Test field and class info simple', function() 

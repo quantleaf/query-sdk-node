@@ -60,6 +60,10 @@ export function FieldInfo (description: (SimpleDescription|Field)) {
         {
 
             const type = Reflect.getMetadata("design:type", target, key);
+            if(!type)
+            {
+                throw new Error('Could not find the type of field with key: '+ key);
+            }
             let transformed:Field = Field.from(key,description as SimpleDescription,simpleTypeToStandardDomainType(type.name));
             descriptionTransformed = transformed;
         }
@@ -69,6 +73,10 @@ export function FieldInfo (description: (SimpleDescription|Field)) {
             if(!f.domain)
             {
                 const type = Reflect.getMetadata("design:type", target, key);
+                if(!type)
+                {
+                    throw new Error('Could not find the type of field with key: '+ key);
+                }
                 f.domain = simpleTypeToStandardDomainType(type.name)
             }
             if(!f.domain)

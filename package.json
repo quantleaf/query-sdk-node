@@ -1,0 +1,39 @@
+{
+  "name": "@quantleaf/query-sdk-node",
+  "version": "1.0.9",
+  "description": "Quantleaf Query SDK for Node",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "test": "mocha -r ts-node/register 'test/**/*.ts'",
+    "build-publish": "npm run prepare-publish && npm publish dist --access public",
+    "prepare-publish": "rimraf dist && tsc && ncp package.json dist/package.json",
+    "patch-publish": "npm update && git add . && git commit -m \"Update dependencies\" && git push origin master && npm version patch && npm run build-publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/quantleaf/query-sdk-node.git"
+  },
+  "author": "quantleaf",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chai": "^4.2.14",
+    "@types/mocha": "^8.2.0",
+    "@types/node": "^8.10.66",
+    "chai": "^4.2.0",
+    "mocha": "^8.2.1",
+    "ncp": "^2.0.0",
+    "rimraf": "^3.0.2",
+    "ts-node": "^9.1.1",
+    "typescript": "^3.9.7"
+  },
+  "dependencies": {
+    "@quantleaf/code-language": "^1.0.9",
+    "@quantleaf/query-request": "^1.0.8",
+    "@quantleaf/query-result": "^1.0.34",
+    "@quantleaf/query-schema": "^1.0.41",
+    "axios": "^0.21.1",
+    "dotenv": "^8.2.0",
+    "reflect-metadata": "^0.1.13"
+  }
+}

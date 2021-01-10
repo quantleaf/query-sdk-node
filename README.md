@@ -12,7 +12,7 @@ In your *tsconfig.json* file put following properties
     "experimentalDecorators": true,
     ...
 ```
-This library uses decorators to provide information about fields, hence these settinsg are necessary.
+This library uses decorators to provide information about fields, hence these settings are necessary.
 
 Obtain an API key at the [account page](https://account.quantleaf.com) (free if you create an account).
 

@@ -7,6 +7,10 @@ import axios, { AxiosError } from 'axios';
 import "reflect-metadata";
 let currentApiKey = null;
 const fieldMetaDataSymbol = '__query_metadata__';
+const fieldMetaDataKey = (constructorName:string) =>
+{
+    return fieldMetaDataSymbol + constructorName;
+}
 const simpleTypeToStandardDomainType = (type:string) =>
 {
    switch (type) {
@@ -22,7 +26,9 @@ const simpleTypeToStandardDomainType = (type:string) =>
 }
 export function ClassInfo (description: (SimpleDescription|KeyWithDescriptions)) {
     return (ctor: Function) => {
-        let schema:Schema = Reflect.getMetadata(fieldMetaDataSymbol, ctor.prototype);
+
+        const metaDataKey = fieldMetaDataKey(ctor.name);
+        let schema:Schema = Reflect.getOwnMetadata(metaDataKey, ctor.prototype);
         if(!schema)
         {
             schema = {
@@ -46,19 +52,39 @@ export function ClassInfo (description: (SimpleDescription|KeyWithDescriptions))
         {
             schema.name.key  = ctor.name;
         }
-        Reflect.defineMetadata(fieldMetaDataSymbol,schema,ctor.prototype);
+        Reflect.defineMetadata(metaDataKey,schema,ctor.prototype);
     }
 }
+
+export const getSuperClasses = (targetClass) => {
+    
+    const ret = [];
+    if(targetClass instanceof Function){
+      let baseClass = targetClass;
+      while (baseClass){
+        const newBaseClass = Object.getPrototypeOf(baseClass);
+        
+        if(newBaseClass && newBaseClass !== Object && newBaseClass.name){
+          baseClass = newBaseClass;
+          ret.push(newBaseClass.name);
+        }else{
+          break;
+        }
+      }
+    }
+    return ret;
+  }
+
+  
 
 export function FieldInfo (description: (SimpleDescription|Field)) {
     return (target: {} | any, name?: PropertyKey): any => {
         // If description is of type SimpleDescription, then transform to Description
+
         const key  = name.toString();
         let descriptionTransformed = description as Field;
-        let type = null;
         if (!(description as Field).description) // description is of SimpleDescription Type
         {
-
             const type = Reflect.getMetadata("design:type", target, key);
             if(!type)
             {
@@ -86,8 +112,8 @@ export function FieldInfo (description: (SimpleDescription|Field)) {
             let transformed:Field = Field.from(f.key ?  f.key : key ,f.description, f.domain);
             descriptionTransformed = transformed;
         }
-
-        let schema:Schema = Reflect.getMetadata(fieldMetaDataSymbol, target);
+        const metaDataKey = fieldMetaDataKey(target.constructor.name);
+        let schema:Schema = Reflect.getMetadata(metaDataKey, target);
         if(!schema)
         {
             schema = {
@@ -104,8 +130,26 @@ export function FieldInfo (description: (SimpleDescription|Field)) {
         schema.fields.push(descriptionTransformed);
      
      
-        Reflect.defineMetadata(fieldMetaDataSymbol,schema,target);
+        Reflect.defineMetadata(metaDataKey,schema,target);
     };
+}
+const getMergedSchema = (object:any):Schema =>
+{
+    const allFields = [];
+    getSuperClasses(object.constructor).forEach((clazz)=>
+    {
+        const fields = (Reflect.getMetadata(fieldMetaDataKey(clazz), object) as Schema)?.fields;
+        if(fields)
+            allFields.push(...fields);
+    });
+    const subClassSchema = (Reflect.getMetadata(fieldMetaDataKey(object.constructor.name), object) as Schema);
+    const ret:Schema  = {
+        fields: [...subClassSchema.fields, ...allFields],
+        name: subClassSchema.name,
+        id: subClassSchema.id
+    }
+    return ret;
+    
 }
 const validateSchema = (schema:Schema) => 
 {
@@ -119,12 +163,13 @@ const validateSchema = (schema:Schema) =>
     });
     
 }
+
 /**
  * @param object 
  */
 export const generateSchema = (object:any):Schema =>  
 {
-    const schema:Schema =  Reflect.getMetadata(fieldMetaDataSymbol, object);
+    const schema:Schema = getMergedSchema(object);
     if(!schema)
     {
         throw new Error('Failed to create schema');
@@ -161,6 +206,10 @@ export const config = (apiKey:string):void =>
     currentApiKey = apiKey;
 }
 
+export const cacheKey = (clazz:any) => 
+{
+    return clazz.constructor?.name;
+}
 /**
  * @param text, the text we want to translate into @QueryResult object
  * @param actions, the actions to perform, at least on of query or suggest has to be non null
@@ -189,18 +238,18 @@ export const translate = async (
         {
             if(!clazz)
                 return;
-            const cacheKey = clazz.constructor?.name;
-            if(keysConsumed.has(cacheKey))
+                const ck = cacheKey(clazz);
+                if(keysConsumed.has(ck))
             {
                 throw new Error('Duplicate class names for: '  + cacheKey + ', class names must be unique');
             }
-            keysConsumed.add(cacheKey);
-            let schemaCache = translationCache.get(cacheKey);
+            keysConsumed.add(ck);
+            let schemaCache = translationCache.get(ck);
             if(!schemaCache)
             {
                 schemaCache = generateSchema(clazz);
                 if(cacheSchemas)
-                    translationCache.set(cacheKey,schemaCache);
+                    translationCache.set(ck,schemaCache);
             }
             schemas.push(schemaCache);
         });

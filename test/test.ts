@@ -3,6 +3,8 @@ import { StandardDomainType, Schema} from '@quantleaf/query-schema';
 import { expect } from 'chai';
 import {ClassInfo, FieldInfo,generateSchema, translate, config } from '../src/index'
 import * as dotenv from 'dotenv';
+
+
 dotenv.config();
 config(process.env.API_KEY);
 
@@ -45,7 +47,6 @@ describe('Query schema builder testing', function() {
         expect(schema.fields[2].key).equals('dateField');
         expect(schema.fields[2].description['SV']).deep.equals(['sv']);
         expect(schema.fields[2].description['EN']).undefined;
-
     });
 
 
@@ -168,6 +169,96 @@ describe('Query schema builder testing', function() {
 
     });
 
+    it('Test inheritance', function() 
+    {
+        const fieldKeyA = 'a';
+        const fieldKeyAA = 'aa';
+        const fieldKeyAAA1 = 'aaa1';
+        const fieldKeyAAA2 = 'aaa2';
+
+        class ClazzA {
+
+            @FieldInfo({
+                key: fieldKeyA,
+                description: ['a'],
+                domain: StandardDomainType.NUMBER
+            })
+            x:number;
+
+        }
+        @ClassInfo('clazzA')
+        class ClazzAA extends ClazzA {
+            @FieldInfo({
+                key: fieldKeyAA,
+                description: ['aa'],
+                domain: StandardDomainType.NUMBER
+            })
+            xx:number;
+        }
+
+        @ClassInfo('clazz1')
+        class Clazz1 extends ClazzAA{
+            @FieldInfo({
+                key: fieldKeyAAA1,
+                description: ['aaa1'],
+                domain: StandardDomainType.NUMBER
+            })
+            xxx1:number;
+        }
+        @ClassInfo('clazz2')
+        class Clazz2 extends ClazzAA {
+            @FieldInfo({
+                key: fieldKeyAAA2,
+                description: ['aaa2'],
+                domain: StandardDomainType.NUMBER
+            })
+            xxx2:number;
+          
+
+        }
+        const schemaAA = generateSchema(new ClazzAA());
+        expect(schemaAA.fields.length).equals(2);
+        expect(schemaAA.fields.find(x=>x.key == fieldKeyA)).exist;
+        expect(schemaAA.fields.find(x=>x.key == fieldKeyAA)).exist;
+        expect(schemaAA.name.key).equals(new ClazzAA().constructor.name);
+
+        const schema1 = generateSchema(new Clazz1());
+        expect(schema1.fields.length).equals(3);
+        expect(schema1.fields.find(x=>x.key == fieldKeyA)).exist;
+        expect(schema1.fields.find(x=>x.key == fieldKeyAA)).exist;
+        expect(schema1.fields.find(x=>x.key == fieldKeyAAA1)).exist;
+        expect(schema1.name.key).equals(new Clazz1().constructor.name);
+
+        const schema2 = generateSchema(new Clazz2());
+        expect(schema2.fields.length).equals(3);
+        expect(schema2.fields.find(x=>x.key == fieldKeyA)).exist;
+        expect(schema2.fields.find(x=>x.key == fieldKeyAA)).exist;
+        expect(schema2.fields.find(x=>x.key == fieldKeyAAA2)).exist;
+        expect(schema2.name.key).equals(new Clazz2().constructor.name);
+
+        expect(schema1.name.key).not.equals(schema2.name.key);
+
+    });
+
+    it('Cache key', function()
+    {
+        const rewire = require("rewire");
+        const sdkModle = rewire("../src/index.ts");
+        @ClassInfo('clazz1')
+        class Clazz1 {
+            @FieldInfo({
+                description: ['n'],
+                domain: StandardDomainType.NUMBER
+            })
+            number:string;
+
+        }
+        const cacheKey = sdkModle.cacheKey(new Clazz1())
+        expect(cacheKey).equals('Clazz1');
+
+    })
+
+
 
 });
 
@@ -175,17 +266,16 @@ describe('API client', async function()
 {
     it('Basic test', async function(){
 
-        @ClassInfo({
-            description: 'text'
-        })
+        
+        @ClassInfo('c')
         class Clazz {
             @FieldInfo({
-                key:'custom-number',
-                description: 'some number'
+                key:'n',
+                description: 'n'
             })
             numberField:number;
         }
-        const resp = await translate('', [new Clazz()], { query: {}, suggest: { limit: 10}} );
+        const resp = await translate('', [new Clazz()], { query: {}, suggest: { limit: 10}});
         expect(resp.query.length).equals(0);
         expect(resp.suggest.length).greaterThan(0);
         expect(resp.unknown).to.not.exist;

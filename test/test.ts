@@ -1,5 +1,5 @@
 import { LanguageCode } from '@quantleaf/code-language';
-import { StandardDomainType, Schema} from '@quantleaf/query-schema';
+import { StandardDomain, Schema} from '@quantleaf/query-schema';
 import { expect } from 'chai';
 import {ClassInfo, FieldInfo,generateSchema, translate, config } from '../src/index'
 import * as dotenv from 'dotenv';
@@ -35,15 +35,15 @@ describe('Query schema builder testing', function() {
         expect(schema.name.description['SV']).deep.equals(['sv']);
         expect(schema.name.description['EN']).deep.equals(['en']);
         expect(Object.keys(schema.fields).length).equals(3);
-        expect(schema.fields[0].domain).equals(StandardDomainType.NUMBER);
+        expect(schema.fields[0].domain).equals(StandardDomain.NUMBER);
         expect(schema.fields[0].key).equals('numberField');
         expect(schema.fields[0].description['SV']).deep.equals(['sv']);
         expect(schema.fields[0].description['EN']).deep.equals(['en']);
-        expect(schema.fields[1].domain).equals(StandardDomainType.TEXT);
+        expect(schema.fields[1].domain).equals(StandardDomain.TEXT);
         expect(schema.fields[1].key).equals('stringField');
         expect(schema.fields[1].description['EN']).deep.equals(['en']);
         expect(schema.fields[1].description['SV']).undefined;
-        expect(schema.fields[2].domain).equals(StandardDomainType.DATE);
+        expect(schema.fields[2].domain).equals(StandardDomain.DATE);
         expect(schema.fields[2].key).equals('dateField');
         expect(schema.fields[2].description['SV']).deep.equals(['sv']);
         expect(schema.fields[2].description['EN']).undefined;
@@ -72,7 +72,7 @@ describe('Query schema builder testing', function() {
         expect(schema.name.description['SV']).deep.equals(['sv']);
         expect(schema.name.description['EN']).deep.equals(['en']);
         expect(Object.keys(schema.fields).length).equals(1);
-        expect(schema.fields[0].domain).equals(StandardDomainType.NUMBER);
+        expect(schema.fields[0].domain).equals(StandardDomain.NUMBER);
         expect(schema.fields[0].key).equals('custon-number');
         expect(schema.fields[0].description['SV']).deep.equals(['sv']);
         expect(schema.fields[0].description['EN']).deep.equals(['en']);
@@ -95,7 +95,7 @@ describe('Query schema builder testing', function() {
         expect(schema.name.key).equals('Clazz');
         expect(schema.name.description[LanguageCode.ANY]).deep.equals(['text']);
         expect(Object.keys(schema.fields).length).equals(1);
-        expect(schema.fields[0].domain).equals(StandardDomainType.NUMBER);
+        expect(schema.fields[0].domain).equals(StandardDomain.NUMBER);
         expect(schema.fields[0].key).equals('custom-number');
         expect(schema.fields[0].description[LanguageCode.ANY]).deep.equals(['text']);
 
@@ -114,7 +114,7 @@ describe('Query schema builder testing', function() {
         expect(schema.name.key).equals('Clazz');
         expect(schema.name.description[LanguageCode.ANY]).deep.equals(['text']);
         expect(Object.keys(schema.fields).length).equals(1);
-        expect(schema.fields[0].domain).equals(StandardDomainType.NUMBER);
+        expect(schema.fields[0].domain).equals(StandardDomain.NUMBER);
         expect(schema.fields[0].key).equals('numberField');
         expect(schema.fields[0].description[LanguageCode.ANY]).deep.equals(['text']);
     });
@@ -181,7 +181,7 @@ describe('Query schema builder testing', function() {
             @FieldInfo({
                 key: fieldKeyA,
                 description: ['a'],
-                domain: StandardDomainType.NUMBER
+                domain: StandardDomain.NUMBER
             })
             x:number;
 
@@ -191,7 +191,7 @@ describe('Query schema builder testing', function() {
             @FieldInfo({
                 key: fieldKeyAA,
                 description: ['aa'],
-                domain: StandardDomainType.NUMBER
+                domain: StandardDomain.NUMBER
             })
             xx:number;
         }
@@ -201,7 +201,7 @@ describe('Query schema builder testing', function() {
             @FieldInfo({
                 key: fieldKeyAAA1,
                 description: ['aaa1'],
-                domain: StandardDomainType.NUMBER
+                domain: StandardDomain.NUMBER
             })
             xxx1:number;
         }
@@ -210,7 +210,7 @@ describe('Query schema builder testing', function() {
             @FieldInfo({
                 key: fieldKeyAAA2,
                 description: ['aaa2'],
-                domain: StandardDomainType.NUMBER
+                domain: StandardDomain.NUMBER
             })
             xxx2:number;
           
@@ -248,7 +248,7 @@ describe('Query schema builder testing', function() {
         class Clazz1 {
             @FieldInfo({
                 description: ['n'],
-                domain: StandardDomainType.NUMBER
+                domain: StandardDomain.NUMBER
             })
             number:string;
 

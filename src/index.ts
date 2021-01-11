@@ -2,7 +2,7 @@
 import { LanguageCode } from '@quantleaf/code-language';
 import { QueryRequest, QueryResponse } from '@quantleaf/query-request';
 import { QueryResult } from '@quantleaf/query-result';
-import { StandardDomainType,  Schema, Field, KeyWithDescriptions, SimpleDescription,unwrapDescription} from '@quantleaf/query-schema';
+import { StandardDomain,  Schema, Field, KeyWithDescriptions, SimpleDescription,unwrapDescription} from '@quantleaf/query-schema';
 import axios, { AxiosError } from 'axios';
 import "reflect-metadata";
 let currentApiKey = null;
@@ -11,15 +11,15 @@ const fieldMetaDataKey = (constructorName:string) =>
 {
     return fieldMetaDataSymbol + constructorName;
 }
-const simpleTypeToStandardDomainType = (type:string) =>
+const simpleTypeToStandardDomain = (type:string) =>
 {
    switch (type) {
         case 'Number':
-           return StandardDomainType.NUMBER;
+           return StandardDomain.NUMBER;
         case 'Date':
-            return StandardDomainType.DATE;
+            return StandardDomain.DATE;
         case 'String':
-            return StandardDomainType.TEXT;
+            return StandardDomain.TEXT;
         default:
             throw new Error('Unsupported type: ' +  type);
    }
@@ -90,7 +90,7 @@ export function FieldInfo (description: (SimpleDescription|Field)) {
             {
                 throw new Error('Could not find the type of field with key: '+ key);
             }
-            let transformed:Field = Field.from(key,description as SimpleDescription,simpleTypeToStandardDomainType(type.name));
+            let transformed:Field = Field.from(key,description as SimpleDescription,simpleTypeToStandardDomain(type.name));
             descriptionTransformed = transformed;
         }
         else 
@@ -103,7 +103,7 @@ export function FieldInfo (description: (SimpleDescription|Field)) {
                 {
                     throw new Error('Could not find the type of field with key: '+ key);
                 }
-                f.domain = simpleTypeToStandardDomainType(type.name)
+                f.domain = simpleTypeToStandardDomain(type.name)
             }
             if(!f.domain)
             {

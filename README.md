@@ -34,7 +34,7 @@ Key from class name, one description in 'ANY' language
 ```javascript
 
 @ClassInfo('My class') 
-public class MyClass 
+class MyClass 
 {
 ...
 
@@ -47,7 +47,7 @@ Key from class name, multiple descriptions in 'ANY' language
 ```javascript
 
 @ClassInfo(['My class','Min klass']) 
-export class MyClass 
+class MyClass 
 {
 ...
 
@@ -70,7 +70,7 @@ Key from class name, multiple descriptions in multiple languages
         EN: ['Min klass']
     }
 ) 
-export class MyClass 
+class MyClass 
 {
 ...
 ```` 
@@ -87,7 +87,7 @@ Custom key and and multiple descriptions in multiple languages
         }
     }
 ) 
-export class MyClass 
+class MyClass 
 {
 ...
 
@@ -106,14 +106,14 @@ Key from field name, type from field value type, single description in 'ANY' lan
 ```javascript
 
 @FieldInfo('price')
-price:number
+price:number;
 
 ```
 Key from field name, type from field value type, multiple descriptions in 'ANY' language
 ```javascript
 
 @FieldInfo(['price','pris'])
-price:number
+price:number;
 
 ```
 Key from field name, type from field value type, multiple descriptions in multiple languages. 
@@ -123,7 +123,7 @@ Key from field name, type from field value type, multiple descriptions in multip
     SV: 'pris',
     EN: ['price','cost']
 })
-price:number
+price:number;
 
 ```
 
@@ -171,7 +171,6 @@ const response = translate(
 *response* will be a promise. The response is explained in detail in the end of the [API documentation](https://github.com/quantleaf/query/blob/master/API.md).
 
 The request above will both request a translated query and suggestions. 
-
 
 
 ## Questions, feature requests, problems? 

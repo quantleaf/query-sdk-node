@@ -39,5 +39,6 @@
     "@quantleaf/query-result": "^1.0.35",
     "@quantleaf/query-schema": "^1.0.43",
     "axios": "^0.21.1"
-  }
+  },
+  "readme": "README.md"
 }

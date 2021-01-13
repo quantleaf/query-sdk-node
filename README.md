@@ -67,7 +67,7 @@ Key from class name, multiple descriptions in multiple languages
 @ClassInfo(
     {
         SV: ['Min klass']
-        EN: ['Min klass']
+        EN: ['My class']
     }
 ) 
 class MyClass 

@@ -11,7 +11,7 @@
     "publish-all": "npm run publish-npm && npm run publish-git",
     "build-publish": "npm run prepare-publish && npm run publish-all",
     "prepare-publish": "rimraf dist && tsc --project tsconfig.prod.json && ncp package.json dist/package.json",
-    "patch-publish": "npm update && git add . && git commit -m \"Update dependencies\" && git push origin master && npm version patch && npm run build-publish"
+    "patch-publish": "npm version patch && npm run build-publish"
   },
   "repository": {
     "type": "git",

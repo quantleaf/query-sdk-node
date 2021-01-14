@@ -6,11 +6,24 @@ import { StandardDomain,  Schema, Field, KeyWithDescriptions, SimpleDescription,
 import axios, { AxiosError } from 'axios';
 import "reflect-metadata";
 let currentApiKey = null;
+let apiEndpoint  = 'https://api.query.quantleaf.com'
+
 const fieldMetaDataSymbol = '__query_metadata__';
 const fieldMetaDataKey = (constructorName:string) =>
 {
     return fieldMetaDataSymbol + constructorName;
 }
+/**
+ * Used for testing purposes only. 
+ * Override API Config.
+ * @param config 
+ */
+export const _override = (config: { apiEndpoint:string}) =>
+{   
+    apiEndpoint = config.apiEndpoint;
+}
+
+
 const simpleTypeToStandardDomain = (type:string) =>
 {
    switch (type) {
@@ -270,7 +283,7 @@ export const translate = async (
 
         const resp = await axios({
             method: 'post',
-            url:  'https://api.query.quantleaf.com/translate',
+            url:  apiEndpoint + '/translate',
             headers: 
             {
                 'X-API-KEY' :  currentApiKey

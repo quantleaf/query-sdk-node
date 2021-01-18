@@ -107,14 +107,14 @@ Key from field name, type from field value type, single description in 'ANY' lan
 ```javascript
 
 @FieldInfo('price')
-price:number;
+price: number;
 
 ```
 Key from field name, type from field value type, multiple descriptions in 'ANY' language
 ```javascript
 
 @FieldInfo(['price','pris'])
-price:number;
+price: number;
 
 ```
 Key from field name, type from field value type, multiple descriptions in multiple languages. 
@@ -124,7 +124,7 @@ Key from field name, type from field value type, multiple descriptions in multip
     SV: 'pris',
     EN: ['price','cost']
 })
-price:number;
+price: number;
 
 ```
 
@@ -146,7 +146,7 @@ Custom key and custom *EnumDomain* type with multiple descriptions in multiple l
         }
     }
 })
-fromCity:string
+fromCity: string
 
 ```
 

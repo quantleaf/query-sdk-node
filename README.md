@@ -24,6 +24,7 @@ Obtain an API key at the [account page](https://account.quantleaf.com) (free if 
 ## Import 
 ```javascript 
 import {ClassInfo, FieldInfo, translate, config} from '@quantleaf/query-sdk-node';
+import {StandardDomain} from '@quantleaf/query-schema';
 
 ```
 There are two decorators you have to use to describe the database schema, *ClassInfo* and *FieldInfo*
@@ -132,8 +133,11 @@ Custom key and custom *EnumDomain* type with multiple descriptions in multiple l
 ```javascript
 
 @FieldInfo({
-    description: 'price',
-    key: 'custom-key',
+    key: 'from_city',
+    description: {
+        SV: 'från',
+        EN: ['from','departure location']
+    },
     domain: {
         LONDON: 'London',
         COPENHAGEN : {
@@ -142,7 +146,7 @@ Custom key and custom *EnumDomain* type with multiple descriptions in multiple l
         }
     }
 })
-city:string
+fromCity:string
 
 ```
 
@@ -155,12 +159,12 @@ config(API_KEY);
 
 ### Translation request
 
-Assume that we have decorated a class named *Recipe*
+Assume that we have decorated a class named *Ticket*
 
 ```javascript
 const response = translate(
     'Some query',
-    [new Recipe()],
+    [new Ticket()],
     {
     query: {},
     suggest: {}

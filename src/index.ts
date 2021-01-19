@@ -270,14 +270,17 @@ export const translate = async (
         // Perform translatio using a web client
         const queryRequest:QueryRequest = {
             text: text,
-            fuzzy:options.fuzzy,
-            languageFilter: options.languageFilter,
-            concurrencySize: options.concurrencySize,
             schemas: schemas,
-            query: actions.query,
-            suggest: actions.suggest
+            options: 
+            {
+                fuzzy:options.fuzzy,
+                languageFilter: options.languageFilter,
+                concurrencySize: options.concurrencySize,
+            },
+            actions: actions
         }
       
+        
         if(!currentApiKey)
             throw new Error('Missing API Key, provide one by invoking "config" once')
 

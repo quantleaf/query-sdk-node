@@ -1,7 +1,7 @@
 import { LanguageCode } from '@quantleaf/code-language';
 import { StandardDomain, Schema} from '@quantleaf/query-schema';
 import { expect } from 'chai';
-import {ClassInfo, FieldInfo,generateSchema, translate, config } from '../src/index'
+import {ClassInfo, FieldInfo,generateSchema, translate, config, _override } from '../src/index'
 import * as dotenv from 'dotenv';
 
 
@@ -266,7 +266,6 @@ describe('API client', async function()
 {
     it('Basic test', async function(){
 
-        
         @ClassInfo('c')
         class Clazz {
             @FieldInfo({

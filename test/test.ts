@@ -266,6 +266,8 @@ describe('API client', async function()
 {
     it('Basic test', async function(){
 
+
+    
         @ClassInfo('c')
         class Clazz {
             @FieldInfo({

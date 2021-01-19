@@ -1,12 +1,10 @@
 
-import { LanguageCode } from '@quantleaf/code-language';
-import { QueryRequest, QueryResponse } from '@quantleaf/query-request';
-import { QueryResult } from '@quantleaf/query-result';
-import { StandardDomain,  Schema, Field, KeyWithDescriptions, SimpleDescription,unwrapDescription} from '@quantleaf/query-schema';
+import { QueryRequest, QueryResponse, QueryOptions, QueryActions } from '@quantleaf/query-request';
+import { StandardDomain, Schema, Field, KeyWithDescriptions, SimpleDescription, unwrapDescription } from '@quantleaf/query-schema';
 import axios, { AxiosError } from 'axios';
 import "reflect-metadata";
 let currentApiKey = null;
-let apiEndpoint  = 'https://api.query.quantleaf.com'
+let apiEndpoint = 'https://api.query.quantleaf.com'
 
 const fieldMetaDataSymbol = '__query_metadata__';
 const fieldMetaDataKey = (constructorName:string) =>
@@ -207,12 +205,6 @@ const isEmptyObject = (obj) => obj ? Object.getOwnPropertyNames(obj).length === 
 
 const translationCache:Map<string,Schema> = new Map();
 
-export interface QueryOptions 
-{
-    fuzzy?:boolean,
-    languageFilter?:LanguageCode[],
-    concurrencySize?:number
-}
 
 export const config = (apiKey:string):void =>
 {   
@@ -236,11 +228,8 @@ export const cacheKey = (clazz:any) =>
 export const translate = async (
     text:string, 
     clazzes:any[], 
-    actions: {
-        query?: {},
-        suggest?: { limit?:number }
-    },
-    options:QueryOptions  = {},
+    actions: QueryActions,
+    options?:QueryOptions,
     cacheSchemas:boolean = true
     ) : Promise<QueryResponse> =>
     {
@@ -271,12 +260,7 @@ export const translate = async (
         const queryRequest:QueryRequest = {
             text: text,
             schemas: schemas,
-            options: 
-            {
-                fuzzy:options.fuzzy,
-                languageFilter: options.languageFilter,
-                concurrencySize: options.concurrencySize,
-            },
+            options: options,
             actions: actions
         }
       

@@ -1,6 +1,6 @@
 {
   "name": "@quantleaf/query-sdk-node",
-  "version": "1.0.28",
+  "version": "1.0.29",
   "description": "Quantleaf Query SDK for Node",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -27,7 +27,6 @@
     "dotenv": "^8.2.0",
     "mocha": "^8.2.1",
     "ncp": "^2.0.0",
-   
     "rewire": "^5.0.0",
     "rimraf": "^3.0.2",
     "ts-node": "^9.1.1",

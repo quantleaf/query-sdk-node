@@ -1,6 +1,6 @@
 {
   "name": "@quantleaf/query-sdk-node",
-  "version": "1.0.29",
+  "version": "1.0.30",
   "description": "Quantleaf Query SDK for Node",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

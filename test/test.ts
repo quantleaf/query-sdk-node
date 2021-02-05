@@ -276,7 +276,7 @@ describe('API client', async function()
             })
             numberField:number;
         }
-        const resp = await translate('', [new Clazz()], { query: {}, suggest: { limit: 10}});
+        const resp = await translate('', [new Clazz()], { query: {}, suggest: { limit: 10}},{concurrencySize: 1,fuzzy: true, negativeConditions: true,nestedConditions: true});
         expect(resp.query.length).equals(0);
         expect(resp.suggest.length).greaterThan(0);
         expect(resp.unknown).to.not.exist;

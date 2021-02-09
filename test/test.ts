@@ -1,5 +1,6 @@
 import { LanguageCode } from '@quantleaf/code-language';
-import { StandardDomain, Schema} from '@quantleaf/query-schema';
+import { Schema} from '../src/index';
+import { StandardDomain } from '@quantleaf/query-schema'; 
 import { expect } from 'chai';
 import {ClassInfo, FieldInfo,generateSchema, translate, config, _override } from '../src/index'
 import * as dotenv from 'dotenv';
@@ -258,7 +259,22 @@ describe('Query schema builder testing', function() {
 
     })
 
+    it('Field meta data', function()
+    {
+        @ClassInfo('c')
+        class Clazz {
+            @FieldInfo({
+                description: ['n'],
+                domain: StandardDomain.NUMBER,
+                meta: 'abc'
+            })
+            number:string;
 
+        }
+        const schema:Schema = generateSchema(new Clazz());
+        expect(schema.fields[0].meta).equals('abc');
+
+    })
 
 });
 
@@ -272,9 +288,10 @@ describe('API client', async function()
         class Clazz {
             @FieldInfo({
                 key:'n',
-                description: 'n'
+                description: 'n',
+                meta: 'abc123'
             })
-            numberField:number;
+            numberField:number
         }
         const resp = await translate('', [new Clazz()], { query: {}, suggest: { limit: 10}},{concurrencySize: 1,fuzzy: true, negativeConditions: true,nestedConditions: true});
         expect(resp.query.length).equals(0);

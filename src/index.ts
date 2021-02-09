@@ -1,8 +1,17 @@
 
 import { QueryRequest, QueryResponse, QueryOptions, QueryActions } from '@quantleaf/query-request';
-import { StandardDomain, Schema, Field, KeyWithDescriptions, SimpleDescription, unwrapDescription } from '@quantleaf/query-schema';
+import { StandardDomain, Schema as BaseSchema, Field as BaseField, KeyWithDescriptions, SimpleDescription, unwrapDescription } from '@quantleaf/query-schema';
 import axios, { AxiosError } from 'axios';
 import "reflect-metadata";
+export class Field extends BaseField
+{
+    meta?:any;
+}
+
+export interface Schema extends BaseSchema {
+    fields: Field[];
+}
+
 let currentApiKey = null;
 let apiEndpoint = 'https://api.query.quantleaf.com'
 
@@ -121,6 +130,9 @@ export function FieldInfo (description: (SimpleDescription|Field)) {
                 throw new Error('Missing type for field: ' + JSON.stringify(description));
             }
             let transformed:Field = Field.from(f.key ?  f.key : key ,f.description, f.domain);
+            
+            transformed.meta = f.meta; // We only use meta data for the SDK
+
             descriptionTransformed = transformed;
         }
         const metaDataKey = fieldMetaDataKey(target.constructor.name);
@@ -178,7 +190,7 @@ const validateSchema = (schema:Schema) =>
 /**
  * @param object 
  */
-export const generateSchema = (object:any):Schema =>  
+export const generateSchema = (object:any, stripMetaData:boolean = false):Schema =>  
 {
     const schema:Schema = getMergedSchema(object);
     if(!schema)
@@ -197,6 +209,11 @@ export const generateSchema = (object:any):Schema =>
     {
         throw new Error('Missing fields, must provide atleast one definition using @FieldInfo');
     }
+    if(stripMetaData)
+        schema?.fields.forEach((field)=>
+        {
+            delete field.meta;
+        })
     validateSchema(schema);
     return schema;
 }
@@ -249,7 +266,7 @@ export const translate = async (
             let schemaCache = translationCache.get(ck);
             if(!schemaCache)
             {
-                schemaCache = generateSchema(clazz);
+                schemaCache = generateSchema(clazz, true);
                 if(cacheSchemas)
                     translationCache.set(ck,schemaCache);
             }
@@ -264,7 +281,6 @@ export const translate = async (
             actions: actions
         }
       
-        
         if(!currentApiKey)
             throw new Error('Missing API Key, provide one by invoking "config" once')
 

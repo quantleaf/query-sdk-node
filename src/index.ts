@@ -190,7 +190,7 @@ const validateSchema = (schema:Schema) =>
 /**
  * @param object 
  */
-export const generateSchema = (object:any, stripMetaData:boolean = false):Schema =>  
+export const generateSchema = (object:any):Schema =>  
 {
     const schema:Schema = getMergedSchema(object);
     if(!schema)
@@ -209,11 +209,6 @@ export const generateSchema = (object:any, stripMetaData:boolean = false):Schema
     {
         throw new Error('Missing fields, must provide atleast one definition using @FieldInfo');
     }
-    if(stripMetaData)
-        schema?.fields.forEach((field)=>
-        {
-            delete field.meta;
-        })
     validateSchema(schema);
     return schema;
 }
@@ -250,7 +245,7 @@ export const translate = async (
     cacheSchemas:boolean = true
     ) : Promise<QueryResponse> =>
     {
-        const schemas = [];
+        const schemas:Schema[] = [];
         // Get or build schemas,
         const keysConsumed = new Set();
         clazzes.forEach((clazz)=>
@@ -266,9 +261,15 @@ export const translate = async (
             let schemaCache = translationCache.get(ck);
             if(!schemaCache)
             {
-                schemaCache = generateSchema(clazz, true);
+                schemaCache = generateSchema(clazz);
                 if(cacheSchemas)
                     translationCache.set(ck,schemaCache);
+            }
+            for (let i = 0; i < schemaCache.fields.length; i++) {
+                if(schemaCache.fields[i].meta)
+                {
+                    schemaCache.fields[i] = (({meta,...o}) => (o))(schemaCache.fields[i]); // strip meta data
+                }   
             }
             schemas.push(schemaCache);
         });

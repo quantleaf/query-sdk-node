@@ -7,7 +7,7 @@
   "scripts": {
     "test": "mocha -r ts-node/register 'test/**/*.ts'",
     "publish-npm": "npm --userconfig=./.npmrc-npm publish dist --access public",
-    "publish-git": "npm --registry=https://npm.pkg.github.com/quantleaf --userconfig=./.npmrc-git publish dist",
+    "publish-git": "npm --userconfig=./.npmrc-git publish dist",
     "publish-all": "npm run publish-npm && npm run publish-git",
     "build-publish": "npm run prepare-publish && npm run publish-all",
     "prepare-publish": "rimraf dist && tsc --project tsconfig.prod.json && ncp package.json dist/package.json",

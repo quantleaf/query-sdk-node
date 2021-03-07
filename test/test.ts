@@ -293,9 +293,15 @@ describe('API client', async function()
             })
             numberField:number
         }
-        const resp = await translate('', [new Clazz()], { query: {}, suggest: { limit: 10}},{concurrencySize: 1,fuzzy: true, negativeConditions: true,nestedConditions: true});
-        expect(resp.query.length).equals(0);
+        _override(
+            {
+                apiEndpoint: 'http://localhost:8080'
+            }
+        )
+        const resp = await translate('n = 1', [new Clazz()], { query: {}, suggest: { limit: 10}},{concurrencySize: 1,fuzzy: true, negativeConditions: true,nestedConditions: true});
+        expect(resp.query.length).equals(1);
         expect(resp.suggest.length).greaterThan(0);
+        expect(resp.score).greaterThan(0);
         expect(resp.unknown).to.not.exist;
 
     })

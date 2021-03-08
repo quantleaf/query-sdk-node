@@ -296,7 +296,6 @@ describe('API client', async function()
         const resp = await translate('n = 1', [new Clazz()], { query: {}, suggest: { limit: 10}},{concurrencySize: 1,fuzzy: true, negativeConditions: true,nestedConditions: true});
         expect(resp.query.length).equals(1);
         expect(resp.suggest.length).greaterThan(0);
-        expect(resp.score).greaterThan(0);
         expect(resp.unknown).to.not.exist;
 
     })

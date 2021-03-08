@@ -21,12 +21,12 @@
   "license": "ISC",
   "devDependencies": {
     "@types/chai": "^4.2.15",
-    "@types/mocha": "^8.2.0",
+    "@types/mocha": "^8.2.1",
     "@types/node": "^8.10.66",
     "@types/reflect-metadata": "^0.1.0",
-    "chai": "^4.3.0",
+    "chai": "^4.3.3",
     "dotenv": "^8.2.0",
-    "mocha": "^8.3.0",
+    "mocha": "^8.3.1",
     "ncp": "^2.0.0",
     "rewire": "^5.0.0",
     "rimraf": "^3.0.2",
@@ -38,9 +38,9 @@
   },
   "dependencies": {
     "@quantleaf/code-language": "^1.0.27",
-    "@quantleaf/query-request": "^1.0.24",
-    "@quantleaf/query-result": "^1.0.38",
-    "@quantleaf/query-schema": "^1.0.45",
+    "@quantleaf/query-request": "^1.0.25",
+    "@quantleaf/query-result": "^1.0.47",
+    "@quantleaf/query-schema": "^1.0.52",
     "axios": "^0.21.1"
   },
   "readme": "README.md"

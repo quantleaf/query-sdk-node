@@ -38,9 +38,9 @@
   },
   "dependencies": {
     "@quantleaf/code-language": "^1.0.27",
-    "@quantleaf/query-request": "^1.0.25",
+    "@quantleaf/query-request": "^1.0.27",
     "@quantleaf/query-result": "^1.0.47",
-    "@quantleaf/query-schema": "^1.0.52",
+    "@quantleaf/query-schema": "^1.0.54",
     "axios": "^0.21.1"
   },
   "readme": "README.md"

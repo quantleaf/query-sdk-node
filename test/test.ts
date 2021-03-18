@@ -280,12 +280,13 @@ describe('Query schema builder testing', function() {
 
 describe('API client', async function()
 {
-    it('Basic test', async function(){
+
+    it('Mix', async function(){
 
 
     
-        @ClassInfo('c')
-        class Clazz {
+        @ClassInfo('n1')
+        class Clazz1 {
             @FieldInfo({
                 key:'n',
                 description: 'n',
@@ -293,10 +294,84 @@ describe('API client', async function()
             })
             numberField:number
         }
-        const resp = await translate('n = 1', [new Clazz()], { query: {}, suggest: { limit: 10}},{concurrencySize: 1,fuzzy: true, negativeConditions: true,nestedConditions: true});
+
+        const anotherSchema:Schema = {
+            name: {
+                key: 'a',
+                description: 'a'
+            },
+            fields: [
+                {
+                    key: 'b',
+                    description: 'b',
+                    domain:  StandardDomain.NUMBER
+                }
+            ]
+        }
+        const resp = await translate('n = 1', [new Clazz1(),anotherSchema], { query: {}, suggest: { limit: 10}},{concurrencySize: 1,fuzzy: true, negativeConditions: true,nestedConditions: true});
         expect(resp.query.length).equals(1);
         expect(resp.suggest.length).greaterThan(0);
         expect(resp.unknown).to.not.exist;
+        
+
+    })
+
+
+    it('Basic test', async function(){
+
+
+    
+        @ClassInfo('n1')
+        class Clazz1 {
+            @FieldInfo({
+                key:'n',
+                description: 'n',
+                meta: 'abc123'
+            })
+            numberField:number
+        }
+        const resp = await translate('n = 1', [new Clazz1()], { query: {}, suggest: { limit: 10}},{concurrencySize: 1,fuzzy: true, negativeConditions: true,nestedConditions: true});
+        expect(resp.query.length).equals(1);
+        expect(resp.suggest.length).greaterThan(0);
+        expect(resp.unknown).to.not.exist;
+        
+
+    })
+
+
+    it('Basic test 2', async function(){
+
+
+    
+        @ClassInfo({
+            key: 'c-search',
+            description: ['m2']
+        })
+        class Clazz2 {
+            @FieldInfo({
+                key: 'text',
+                description: 'text',
+                domain: StandardDomain.TEXT
+            })
+            text:string
+
+            @FieldInfo(
+                {
+                    key: 'enum',
+                    description: 'enum',
+                    domain: 
+                    {
+                        'abc' : '123'
+                    }
+                }
+            )
+            safeSearch: string;
+        }
+        const resp = await translate('text a and (b or c) 123', [new Clazz2()], { query: {}, suggest: { limit: 10}},{concurrencySize: 1,fuzzy: true, negativeConditions: true,nestedConditions: true});
+        expect(resp.query.length).equals(1);
+        expect(resp.suggest.length).greaterThan(0);
+        expect(resp.unknown).to.not.exist;
+        
 
     })
 })

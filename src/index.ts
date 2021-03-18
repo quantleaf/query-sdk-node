@@ -252,8 +252,15 @@ export const translate = async (
         {
             if(!clazz)
                 return;
-                const ck = cacheKey(clazz);
-                if(keysConsumed.has(ck))
+
+            if((clazz as Schema).name?.key) /// if class is already a schema just add it
+            {
+                schemas.push(clazz);
+                return;
+            }
+
+            const ck = cacheKey(clazz);
+            if(keysConsumed.has(ck))
             {
                 throw new Error('Duplicate class names for: '  + cacheKey + ', class names must be unique');
             }

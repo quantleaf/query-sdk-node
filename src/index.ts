@@ -253,7 +253,7 @@ export const translate = async (
             if(!clazz)
                 return;
 
-            if((clazz as Schema).name?.key) /// if class is already a schema just add it
+            if((clazz as Schema).name?.key) // if class is already a Schema just add it
             {
                 schemas.push(clazz);
                 return;
